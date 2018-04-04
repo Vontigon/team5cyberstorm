@@ -6,11 +6,8 @@ The program is able to read two separate scenarios:
     1) The last 7 permissions of each file/directory, ignoring the first 3
     2) All permissions of every file/directory concatenated into a single string
 """
-#import sys
-#from subprocess import Popen, PIPE
 import subprocess
 
-#infile = sys.stdin
 covertTen = ""
 covertSeven = ""
 #EDITABLE VARIABLES
@@ -32,7 +29,6 @@ def decode(permissions):
 
     #Decodes binary string
     print ''.join(chr(int(message[i*7:i*7+7],2)) for i in range(len(message)//7)) #7 bit binary
-    #print(''.join(chr(int(message[i*8:i*8+8],2)) for i in range(len(message)//8))) #Might be unnecessary
 
 #------------Main-----------------------------------------------------------------------
 #ftp -n negates auto-login, allowing us to login via program
@@ -44,17 +40,14 @@ ftp = subprocess.Popen(["ftp", "-n", HOST, PORT],
                        bufsize=0)
 ftp.stdin.write("quote USER %s\n" % USER) #'quote USER <username>' is how you login using ftp -n
 ftp.stdin.write("quote PASS %s\n" % PASS) #Same for password
-#Can add 'cd 10' as well if we need to
 ftp.stdin.write("cd %s\n" % DIR)
-ftp.stdin.write("ls")
+ftp.stdin.write("ls") #Gets file/directories available
 
 output = ftp.communicate()[0] #Reads the output as it would be printed in the terminal
 perms = output.split()
 #Setting the strings to only permissions
 for i in xrange(0,len(perms),9):
     perm = perms[i]
-    #if perm[0] != "-" and perm[0] != "d" and perm[0] != "l": #A line not starting with - or d is not a file/dir line
-    #    break
     covertTen += perm #First 10 file/dir permissions
     #Ignores "noise"
     if perm[0] == "-" and perm[1] == "-" and perm[2] == "-":
