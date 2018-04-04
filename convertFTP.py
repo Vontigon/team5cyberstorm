@@ -7,16 +7,18 @@ The program is able to read two separate scenarios:
     2) All permissions of every file/directory concatenated into a single string
 """
 #import sys
-import subprocess
 #from subprocess import Popen, PIPE
+import subprocess
 
 #infile = sys.stdin
 covertTen = ""
 covertSeven = ""
-HOST = "localhost" #FTP server name
+#EDITABLE VARIABLES
+HOST = "jeangourd.com" #FTP server name
+PORT = "21" #FTP server port (21 default)
 USER = "anonymous" #FTP username
 PASS = "" #FTP password
-DIR = "/10" #Change to whatever directory you want to capture
+DIR = "/new" #Change to whatever directory you want to capture
 
 #-----------Decoding function----------------------------------------------------------
 def decode(permissions):
@@ -34,7 +36,7 @@ def decode(permissions):
 
 #------------Main-----------------------------------------------------------------------
 #ftp -n negates auto-login, allowing us to login via program
-ftp = subprocess.Popen(["ftp", "-n", "%s" % HOST],
+ftp = subprocess.Popen(["ftp", "-n", HOST, PORT],
                        stdin=subprocess.PIPE,
                        stdout=subprocess.PIPE,
                        stderr=subprocess.PIPE,
